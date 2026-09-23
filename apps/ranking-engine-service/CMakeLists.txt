@@ -7,4 +7,4 @@ project(
 
 
 
-add_executable(Executable main.cc)
+add_executable(Executable "${CMAKE_CURRENT_SOURCE_DIR}/src/main.cc")

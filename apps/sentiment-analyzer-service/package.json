@@ -2,16 +2,18 @@
   "name": "sentiment-analyzer-service",
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "set INNGEST_DEV=1&& tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "inngest": "npx inngest-cli@latest dev -u http://localhost:3000/api/inngest"
   },
   "dependencies": {
     "@hono/node-server": "^2.1.1",
     "@huggingface/inference": "^4.13.30",
+    "@repo/database": "workspace:*",
+    "dotenv": "^18.0.3",
     "hono": "^4.13.8",
-    "inngest": "^4.20.0",
-    "@repo/database":"workspace:*"
+    "inngest": "^4.20.0"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

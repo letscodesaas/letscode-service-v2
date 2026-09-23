@@ -14,7 +14,7 @@ export class SentimentAnalyzer extends InferenceClient {
       const output = await this.textClassification({
         model: this.modelName,
         inputs: ip,
-        provider: "auto",
+        provider: "hf-inference",
       });
       return output;
     } catch (error) {

@@ -1,18 +1,23 @@
 import { InferenceClient } from "@huggingface/inference";
 
-const client = new InferenceClient(process.env.HF_TOKEN);
+export class PostEmbedding extends InferenceClient {
+  private modelName: string;
 
-const output = await client.sentenceSimilarity({
-	model: "sentence-transformers/all-MiniLM-L6-v2:preferred",
-	inputs: {
-    "source_sentence": "That is a happy person",
-    "sentences": [
-        "That is a happy dog",
-        "That is a very happy person",
-        "Today is a sunny day"
-    ]
-},
-	provider: "auto",
-});
+  constructor(t: string, modelName: string) {
+    super(t)
+    this.modelName = modelName;
+  }
 
-console.log(output);
+  public async model(ip:string) {
+    try {
+      const output = await this.featureExtraction({
+        model: this.modelName,
+        inputs: ip,
+        provider: "auto",
+      });
+      return output;
+    } catch (error) {
+      throw new Error(String(error));
+    }
+  }
+}

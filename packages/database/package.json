@@ -2,9 +2,12 @@
   "name": "@repo/database",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "private": "true",
   "exports": {
     "./database":"./dist/index.js"
+  },
+  "dependencies": {
+    "mongoose": "^9.5.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

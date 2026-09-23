@@ -1,17 +1,14 @@
-import { serve as server } from '@hono/node-server'
-import { Hono } from 'hono'
+import { serve as server } from "@hono/node-server";
+import { Hono } from "hono";
 import { serve } from "inngest/hono";
 import { functions, inngest } from "./inngest/inngest.js";
-import {ConnectDB} from "@repo/database/database";
-
+import { ENV } from "./env/env.js";
 
 const app = new Hono();
-const connection = new ConnectDB();
 
-
-app.get('/', (c) => {
-  return c.text('Hello Hono!')
-})
+app.get("/", (c) => {
+  return c.text("Hello Hono!");
+});
 
 app.on(
   ["GET", "PUT", "POST"],
@@ -19,13 +16,51 @@ app.on(
   serve({
     client: inngest,
     functions,
-  })
+  }),
 );
 
+app.post("/analyze", async (c) => {
+  try {
+    const data = await c.req.json();
+    const { postId, userId, post } = data;
+    if (!postId || !userId || !post) {
+      c.status(403);
+      return c.json({ message: "All fields are required" });
+    }
+    await inngest.send({
+      data: {
+        postId,
+        userId,
+        post,
+      },
+      name: "event/seniment.function",
+    });
+      await inngest.send({
+      data: {
+        postId,
+        userId,
+        post,
+      },
+      name: "event/embedding.function",
+    });
+    c.status(200);
+    return c.json({ message: "success" });
+  } catch (error) {
+    console.log(error);
+    c.status(500);
+    return c.json({ message: "Internal Server Error" });
+  }
+});
 
-server({
-  fetch: app.fetch,
-  port: 3000
-}, (info) => {
-  console.log(`Server is running on http://localhost:${info.port}`)
-})
+if (ENV.MODE === "dev")
+  server(
+    {
+      fetch: app.fetch,
+      port: parseInt(ENV.PORT),
+    },
+    (info) => {
+      console.log(`Server is running on http://localhost:${info.port}`);
+    },
+  );
+
+export default app;
