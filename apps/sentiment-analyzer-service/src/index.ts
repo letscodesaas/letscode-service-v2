@@ -1,10 +1,13 @@
 import { serve as server } from "@hono/node-server";
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { serve } from "inngest/hono";
 import { functions, inngest } from "./inngest/inngest.js";
 import { ENV } from "./env/env.js";
 
 const app = new Hono();
+
+app.use("*", cors({ origin: ENV.CORS_ORIGINS }));
 
 app.get("/", (c) => {
   return c.text("Hello Hono!");

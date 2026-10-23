@@ -17,6 +17,20 @@ const _ENV = {
         throw new Error("PORT is required");
       })(),
 
+  MONGODB_URI: process.env.MONGODB_URI
+    ? process.env.MONGODB_URI
+    : (() => {
+        throw new Error("MONGODB_URI is required");
+      })(),
+
+  CORS_ORIGINS: process.env.CORS_ORIGINS
+    ? process.env.CORS_ORIGINS.split(",")
+        .map((origin) => origin.trim())
+        .filter(Boolean)
+    : (() => {
+        throw new Error("CORS_ORIGINS is required");
+      })(),
+
   SENTIMENT_MODEL: process.env.SENTIMENT_MODEL
     ? process.env.SENTIMENT_MODEL
     : (() => {
